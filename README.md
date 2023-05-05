@@ -1,6 +1,11 @@
 # personal website
 
-using svelte as frontend and axum as backeo
+## using:
+
+- svelte
+- axum
+- tailwind
+- a lot of tooling
 
 ## this is overkill for a personal website
 
