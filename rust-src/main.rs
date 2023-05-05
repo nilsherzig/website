@@ -1,3 +1,6 @@
+use core::time;
+use std::thread;
+
 use axum::{
     http::{header::CONTENT_TYPE, StatusCode},
     routing::{get, post},
@@ -44,6 +47,9 @@ async fn main() {
         );
     async fn get_user() -> (StatusCode, Json<User>) {
         // insert your application logic here
+
+        thread::sleep(time::Duration::from_secs(2));
+
         let user = User {
             id: 1338,
             username: "random-username".to_string(),
