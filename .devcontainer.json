@@ -1,0 +1,14 @@
+{
+	"image": "ubuntu:lunar",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"rust-lang.rust-analyzer",
+				"esbenp.prettier-vscode",
+				"svelte.svelte-vscode",
+				"bradlc.vscode-tailwindcss",
+				"ms-vscode.vscode-typescript-next"
+			]
+		}
+	}
+}
