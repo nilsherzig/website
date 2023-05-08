@@ -3,6 +3,9 @@ use axum::{
     routing::{get, post},
     Json, Router,
 };
+use std::env;
+use std::fs;
+
 use serde::{Deserialize, Serialize};
 use serde_json::Result;
 
@@ -41,8 +44,38 @@ async fn main() {
                     .allow_headers([CONTENT_TYPE])
                     .allow_methods([axum::http::Method::GET]),
             ),
+        )
+        .route(
+            "/healthcheck",
+            get(healthceck).layer(
+                tower_http::cors::CorsLayer::new()
+                    .allow_origin(
+                        "http://localhost:5173"
+                            .parse::<axum::http::HeaderValue>()
+                            .unwrap(),
+                    )
+                    .allow_headers([CONTENT_TYPE])
+                    .allow_methods([axum::http::Method::GET]),
+            ),
         );
+
+    #[derive(Serialize)]
+    struct Status {
+        state: String,
+        content: String,
+    }
+
+    async fn healthceck() -> (StatusCode, Json<Status>) {
+        let content = fs::read_to_string("./test.md").expect("error reading file");
+        let status = Status {
+            state: "good".to_string(),
+            content,
+        };
+        (StatusCode::IM_A_TEAPOT, Json(status))
+    }
+
     async fn get_user() -> (StatusCode, Json<User>) {
+        println!("new request");
         let user = User {
             id: 1338,
             username: "random-username".to_string(),

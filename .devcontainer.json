@@ -11,5 +11,11 @@
 				"dbaeumer.vscode-eslint"
 			]
 		}
+	},
+	"features": {
+		"ghcr.io/devcontainers/features/git:1": {},
+		"ghcr.io/devcontainers/features/rust:1": {},
+		"ghcr.io/devcontainers-contrib/features/npm-package:1": {},
+		"ghcr.io/devcontainers/features/node:1": {}
 	}
 }
