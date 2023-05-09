@@ -11,6 +11,7 @@
 	let phi_n = (p - 1) * (q - 1);
 	let e = 65537;
 	let d = get_d(phi_n, e);
+	let mountHasRun = false;
 
 	let encryptedText: String[] = [];
 
@@ -79,7 +80,14 @@
 	$: inputClearText, encrypt();
 	$: inputEncryptedText, decrypt();
 
-	let mountHasRun = false;
+	function updateState() {
+		if (mountHasRun) {
+			if (browser) {
+				const obj = { p: p, q: q, N: N, e: e, inputClearText: inputClearText };
+				window.location.hash = JSON.stringify(obj);
+			}
+		}
+	}
 
 	function updateSite() {
 		console.log('update');
@@ -89,13 +97,7 @@
 		phi_n = (p - 1) * (q - 1);
 		e = e;
 		d = get_d(phi_n, e);
-
-		if (mountHasRun) {
-			if (browser) {
-				const obj = { p: p, q: q, N: N, e: e };
-				window.location.hash = JSON.stringify(obj);
-			}
-		}
+		updateState();
 	}
 
 	onMount(async () => {
@@ -106,6 +108,7 @@
 			p = obj.p;
 			q = obj.q;
 			e = obj.e;
+			inputClearText = obj.inputClearText;
 		} catch {
 			console.log('error parsing #');
 		}
@@ -125,6 +128,7 @@
 		}
 		inputEncryptedText = encryptedText.toString();
 		// clearTextChars = clearTextChars;
+		updateState();
 	}
 
 	function decrypt() {
@@ -139,6 +143,7 @@
 
 		clearText = String.fromCharCode(...dec_array);
 		inputClearText = clearText;
+		updateState();
 	}
 </script>
 
