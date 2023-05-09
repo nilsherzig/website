@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	let inverseTableData = new Array();
 	import RsaInput from './rsa_input.svelte';
+	import { onMount } from 'svelte';
 
 	let clearText = 'Für die Horde';
 	let p = 83;
@@ -69,18 +71,6 @@
 		return result;
 	}
 
-	let character: String;
-	const exponent = 65537;
-	const modulus = 143;
-
-	character = 'U';
-	console.log(character.charCodeAt(0)); // 85
-	console.log(modularExponentiation(character.charCodeAt(0), exponent, modulus)); // 24
-
-	character = 'ä';
-	console.log(character.charCodeAt(0)); // 228
-	console.log(modularExponentiation(character.charCodeAt(0), exponent, modulus)); // 24
-
 	// default state of the website
 	encrypt();
 
@@ -89,14 +79,37 @@
 	$: inputClearText, encrypt();
 	$: inputEncryptedText, decrypt();
 
+	let mountHasRun = false;
+
 	function updateSite() {
+		console.log('update');
 		p = p;
 		q = q;
 		N = p * q;
 		phi_n = (p - 1) * (q - 1);
 		e = e;
 		d = get_d(phi_n, e);
+
+		if (mountHasRun) {
+			if (browser) {
+				const obj = { p: p, q: q, N: N, e: e };
+				window.location.hash = JSON.stringify(obj);
+			}
+		}
 	}
+
+	onMount(async () => {
+		let jsonString = window.location.hash.replace('#', '');
+		jsonString = decodeURI(jsonString);
+		let obj = JSON.parse(jsonString);
+
+		p = obj.p;
+		q = obj.q;
+		e = obj.e;
+
+		mountHasRun = true;
+		updateSite();
+	});
 
 	function encrypt() {
 		console.log('running enc');
@@ -113,7 +126,6 @@
 	}
 
 	function decrypt() {
-		console.log('running dec');
 		let enc_array = inputEncryptedText.split(',');
 
 		let dec_array: number[] = new Array();
@@ -129,7 +141,7 @@
 </script>
 
 <div
-	class="flex flex-wrap justify-between gap-4 rounded bg-zinc-800 p-2 shadow selection:bg-emerald-500 selection:text-zinc-900"
+	class="container mx-auto mt-2 flex flex-wrap justify-between gap-4 rounded bg-zinc-800 p-2 shadow selection:bg-emerald-500 selection:text-zinc-900"
 >
 	<div class="w-full p-4">
 		<p class="mb-2 font-bold text-zinc-400">En / Decrypt</p>
