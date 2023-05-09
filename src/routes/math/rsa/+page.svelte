@@ -101,12 +101,14 @@
 	onMount(async () => {
 		let jsonString = window.location.hash.replace('#', '');
 		jsonString = decodeURI(jsonString);
-		let obj = JSON.parse(jsonString);
-
-		p = obj.p;
-		q = obj.q;
-		e = obj.e;
-
+		try {
+			let obj = JSON.parse(jsonString);
+			p = obj.p;
+			q = obj.q;
+			e = obj.e;
+		} catch {
+			console.log('error parsing #');
+		}
 		mountHasRun = true;
 		updateSite();
 	});
