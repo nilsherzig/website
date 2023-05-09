@@ -7,6 +7,7 @@
 
 <div class="container mx-auto mt-4 text-zinc-200">
 	<p>Nothing here</p>
+	<p>contact: nils at nilsherzig.com</p>
 	<!-- <a href="/math" class="text-blue-500 underline hover:cursor-pointer">Mathe rsa thing</a>
 
 	<p>Backend check:</p> -->
