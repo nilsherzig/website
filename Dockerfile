@@ -1,6 +1,17 @@
-FROM nginx:1.27-alpine
+FROM golang:1.24-alpine AS builder
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY index.html /usr/share/nginx/html/
+WORKDIR /app
+COPY go.mod ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -o website .
 
-EXPOSE 80
+FROM alpine:3.21
+
+RUN adduser -D -u 1000 appuser
+USER appuser
+WORKDIR /app
+COPY --from=builder /app/website .
+
+EXPOSE 8080
+CMD ["./website"]
